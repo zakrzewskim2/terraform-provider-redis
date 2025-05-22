@@ -9,5 +9,6 @@ import (
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: redis.Provider,
+		ProtocolVersion: 5,
 	})
 }
