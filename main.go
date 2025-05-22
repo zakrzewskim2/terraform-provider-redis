@@ -3,11 +3,11 @@ package main
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/zakrzewskim2/terraform-provider-redis/redis"
 )
 
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: redis.Provider,
-		ProtocolVersion: 5,
 	})
 }
