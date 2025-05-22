@@ -4,16 +4,11 @@ go 1.23.0
 
 toolchain go1.23.9
 
-require (
-	github.com/go-redis/redis/v8 v8.11.5
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.37.0
-)
+require github.com/hashicorp/terraform-plugin-sdk/v2 v2.37.0
 
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
-	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
