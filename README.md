@@ -28,7 +28,7 @@ To use this provider, add it to your Terraform configuration:
 terraform {
   required_providers {
     redis = {
-      source  = "your_github_username/redis"
+      source  = "zakrzewskim2/redis"
       version = "~> 0.1.0"
     }
   }
