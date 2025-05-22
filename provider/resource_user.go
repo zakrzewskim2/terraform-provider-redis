@@ -3,12 +3,10 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
-	"github.com/mediocregopher/radix/v4"
-	"github.com/r3labs/diff/v2"
 )
 
 func resourceRedisUser() *schema.Resource {

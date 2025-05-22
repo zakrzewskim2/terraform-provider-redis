@@ -47,10 +47,7 @@ func New(version string) func() *schema.Provider {
 				},
 			},
 			ResourcesMap: map[string]*schema.Resource{
-				"redisdb_hash": resourceHash(),
-			},
-			DataSourcesMap: map[string]*schema.Resource{
-				"redisdb_hash": dataSourceHash(),
+			"redis_user": resourceRedisUser(),
 			},
 			ConfigureContextFunc: providerConfigure,
 		}
