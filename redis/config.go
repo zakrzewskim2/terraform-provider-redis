@@ -2,8 +2,7 @@
 package redis
 
 import (
-	"context"
-	"github.com/go-redis/redis/v8"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type RedisClient struct {
