@@ -3,9 +3,12 @@ package redis
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"github.com/mediocregopher/radix/v4"
 )
 
 type RedisClient struct {
