@@ -1,6 +1,8 @@
 module github.com/zakrzewskim2/terraform-provider-redis
 
-go 1.18
+go 1.23.0
+
+toolchain go1.23.9
 
 require (
 	github.com/go-redis/redis/v8 v8.11.5
