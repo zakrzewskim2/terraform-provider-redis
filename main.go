@@ -1,4 +1,4 @@
-module github.com/zakrzewskim2/terraform-provider-rediscloud
+module github.com/zakrzewskim2/terraform-provider-redis
 
 go 1.22.2
 
