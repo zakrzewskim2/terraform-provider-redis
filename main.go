@@ -1,31 +1,7 @@
-package main
+module github.com/zakrzewskim2/terraform-provider-rediscloud
 
-import (
-	"context"
-	"flag"
-	"log"
+go 1.22.2
 
-	"github.com/zakrzewskim2/terraform-provider-redis/redis"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+require (
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
 )
-
-
-var (
-	// these will be set by the goreleaser configuration
-	// to appropriate values for the compiled binary
-	version string = "dev"
-
-	// goreleaser can also pass the specific commit if you want
-	// commit  string = ""
-)
-
-func main() {
-	var debugMode bool
-
-	flag.BoolVar(&debugMode, "debug", false, "set to true to run the provider with support for debuggers like delve")
-	flag.Parse()
-
-	opts := &plugin.ServeOpts{ProviderFunc: provider.New(version)}
-
-	plugin.Serve(opts)
-}
