@@ -7,20 +7,8 @@ import (
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"address": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"password": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Sensitive: true,
-			},
-		},
-		ResourcesMap: map[string]*schema.Resource{
-			"redis_user": resourceRedisUser(),
-		},
-		ConfigureFunc: providerConfigure,
+		Schema:        providerConfig(),
+		ResourcesMap:  map[string]*schema.Resource{"redis_user": resourceRedisUser()},
+		ConfigureContextFunc: providerConfigure,
 	}
 }
