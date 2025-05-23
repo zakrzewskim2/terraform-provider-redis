@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"crypto/tls"
 	"strconv"
 
 	"github.com/go-redis/redis/v8"
@@ -33,7 +34,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		DB:   db,
 		Password: password,
 	}
-	
+
 	if useTLS {
 		opts.TLSConfig = &tls.Config{}
 	}
