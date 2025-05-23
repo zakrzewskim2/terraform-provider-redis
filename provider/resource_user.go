@@ -57,12 +57,18 @@ func buildACLArgs(d *schema.ResourceData) []string {
 	pw := d.Get("password").(string)
 	acl = append(acl, fmt.Sprintf(">%s", pw))
 
-	for _, c := range d.Get("commands").([]interface{}) {
-		acl = append(acl, fmt.Sprintf("commands|%s", c.(string)))
+	// Redis expects commands as "+get +set", not "commands|get"
+	if commands, ok := d.GetOk("commands"); ok {
+		for _, c := range commands.([]interface{}) {
+			acl = append(acl, fmt.Sprintf("+%s", c.(string)))
+		}
 	}
 
-	for _, k := range d.Get("keys").([]interface{}) {
-		acl = append(acl, fmt.Sprintf("keys|%s", k.(string)))
+	// Redis expects keys as "allkeys" or "resetchannels" — using ~ for glob-style patterns
+	if keys, ok := d.GetOk("keys"); ok {
+		for _, k := range keys.([]interface{}) {
+			acl = append(acl, fmt.Sprintf("~%s", k.(string)))
+		}
 	}
 
 	return acl
