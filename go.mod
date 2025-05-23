@@ -5,7 +5,6 @@ go 1.22.2
 require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.1
-	github.com/mediocregopher/radix/v4 v4.0.0-beta.1
 )
 
 require (
@@ -35,7 +34,6 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/oklog/run v1.0.0 // indirect
-	github.com/tilinna/clock v1.0.2 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/zclconf/go-cty v1.4.1 // indirect
 	golang.org/x/net v0.0.0-20210428140749-89ef3d95e781 // indirect

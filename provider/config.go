@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
 
-	"github.com/mediocregopher/radix/v4"
+	"github.com/go-redis/redis/v8"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/go-redis/redis/v8"
 )
 
 type RedisClient struct {
@@ -17,20 +17,33 @@ type RedisClient struct {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	hostname := d.Get("hostname").(string)
 	port := d.Get("port").(string)
-	database := d.Get("database").(string)
+	databaseStr := d.Get("database").(string)
+	password := d.Get("password").(string)
+	useTLS := d.Get("tls").(bool)
 
 	var diags diag.Diagnostics
 
-	cfg := radix.PoolConfig{
-		Dialer: radix.Dialer{
-			SelectDB: database,
-		},
-	}
-
-	client, err := cfg.New(ctx, "tcp", fmt.Sprintf("%s:%s", hostname, port))
+	db, err := strconv.Atoi(databaseStr)
 	if err != nil {
-		return nil, diag.FromErr(err)
+		return nil, diag.FromErr(fmt.Errorf("invalid database number: %v", err))
 	}
 
-	return client, diags
+	opts := &redis.Options{
+		Addr: fmt.Sprintf("%s:%s", hostname, port),
+		DB:   db,
+		Password: password,
+	}
+	
+	if useTLS {
+		opts.TLSConfig = &tls.Config{}
+	}
+
+	client := redis.NewClient(opts)
+
+	// Test the connection
+	if err := client.Ping(ctx).Err(); err != nil {
+		return nil, diag.FromErr(fmt.Errorf("unable to connect to Redis: %v", err))
+	}
+
+	return &RedisClient{Client: client}, diags
 }

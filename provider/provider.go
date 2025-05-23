@@ -41,6 +41,19 @@ func New(version string) func() *schema.Provider {
 					Optional:    true,
 					DefaultFunc: schema.EnvDefaultFunc("REDISDB_DATABASE", "0"),
 				},
+				"password": {
+					Description: "Password for Redis authentication. Can be set via `REDISDB_PASSWORD`.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					DefaultFunc: schema.EnvDefaultFunc("REDISDB_PASSWORD", nil),
+					Sensitive:   true,
+				},
+				"tls": {
+					Description: "Enable TLS (true/false).",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
+				},
 			},
 			ResourcesMap: map[string]*schema.Resource{
 			"redis_user": resourceRedisUser(),
