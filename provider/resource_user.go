@@ -4,8 +4,8 @@ package provider
 import (
 	"context"
 	"fmt"
-	"strings"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -22,8 +22,8 @@ func resourceRedisUser() *schema.Resource {
 				Required: true,
 			},
 			"password": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
 				Sensitive: true,
 			},
 			"commands": {
@@ -45,7 +45,7 @@ func resourceRedisUser() *schema.Resource {
 	}
 }
 
-func buildACLString(d *schema.ResourceData) string {
+func buildACLArgs(d *schema.ResourceData) []string {
 	var acl []string
 
 	if d.Get("enabled").(bool) {
@@ -65,7 +65,15 @@ func buildACLString(d *schema.ResourceData) string {
 		acl = append(acl, fmt.Sprintf("keys|%s", k.(string)))
 	}
 
-	return strings.Join(acl, " ")
+	return acl
+}
+
+func stringSliceToInterfaceSlice(s []string) []interface{} {
+	out := make([]interface{}, len(s))
+	for i, v := range s {
+		out[i] = v
+	}
+	return out
 }
 
 func resourceRedisUserCreate(d *schema.ResourceData, m interface{}) error {
@@ -73,9 +81,11 @@ func resourceRedisUserCreate(d *schema.ResourceData, m interface{}) error {
 	ctx := context.Background()
 
 	user := d.Get("username").(string)
-	acl := buildACLString(d)
+	aclArgs := buildACLArgs(d)
 
-	_, err := client.Do(ctx, "ACL", "SETUSER", user, acl).Result()
+	// ACL SETUSER <user> <args...>
+	cmd := append([]interface{}{"ACL", "SETUSER", user}, stringSliceToInterfaceSlice(aclArgs)...)
+	_, err := client.Do(ctx, cmd...).Result()
 	if err != nil {
 		return err
 	}
@@ -90,9 +100,11 @@ func resourceRedisUserRead(d *schema.ResourceData, m interface{}) error {
 
 	user := d.Id()
 	_, err := client.Do(ctx, "ACL", "GETUSER", user).Result()
-	if err != nil {
-		d.SetId("")
+	if err == redis.Nil {
+		d.SetId("") // user doesn't exist
 		return nil
+	} else if err != nil {
+		return err
 	}
 
 	return nil
@@ -103,9 +115,10 @@ func resourceRedisUserUpdate(d *schema.ResourceData, m interface{}) error {
 	ctx := context.Background()
 
 	user := d.Id()
-	acl := buildACLString(d)
+	aclArgs := buildACLArgs(d)
 
-	_, err := client.Do(ctx, "ACL", "SETUSER", user, acl).Result()
+	cmd := append([]interface{}{"ACL", "SETUSER", user}, stringSliceToInterfaceSlice(aclArgs)...)
+	_, err := client.Do(ctx, cmd...).Result()
 	if err != nil {
 		return err
 	}
@@ -118,7 +131,6 @@ func resourceRedisUserDelete(d *schema.ResourceData, m interface{}) error {
 	ctx := context.Background()
 
 	user := d.Id()
-
 	_, err := client.Do(ctx, "ACL", "DELUSER", user).Result()
 	if err != nil {
 		return err
